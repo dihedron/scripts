@@ -26,9 +26,8 @@ plugin() {
             echo $usage
             return 1        
         fi        
-        # TODO: check that the PLUGINSLIB exists, or a directory under 
-        # the home directory, then verify that a file with the proper
-        # name ("_${name}.sh", e.g _log.sh for "log") exists there
+        # check that the PLUGINSLIB exists, or a directory named .plugins
+        # under the current user's home directory (~/.plugins) 
         if [ "$PLUGINSLIB" != "" -a -d "$PLUGINSLIB" ]; then
             return 0
         elif [ -d ~/.plugins ]; then
