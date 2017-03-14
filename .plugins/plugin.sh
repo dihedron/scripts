@@ -9,8 +9,7 @@
 declare -a _plugins
 
 plugin() {
-
-    local usage="usage: plugin <start|end|import|check|reset|list|help> [<name>]"
+    local usage="usage: plugin <start|end|import|load|check|reset|list|help> [<name>]"
 
     # check if an operation was specified
     local operation=$1
@@ -48,7 +47,7 @@ plugin() {
         _plugins[${#_plugins[@]}]="$name"
         return 0          
         ;;
-    "import")
+    "import"|"load")
         # validate input parameter: import requires the plugin name
         name=$2
         if [ -z "$2" ]; then
@@ -58,7 +57,7 @@ plugin() {
         # check if already loaded, if so skip and return success
         plugin check $2
         if [ $? -eq 0 ]; then
-            echo "plugin $name already loaded"
+            # plugin is already loaded
             return 0
         fi
         # check if the file exists under the $PLUGINSLIB path or 
@@ -100,8 +99,52 @@ plugin() {
         return 0            
         ;;
     "help")
-        # TODO: write extensive usage!
+        echo "  +----------------------------------------------------------+"
+        echo "  |                     PLUGIN HELP                          |"
+        echo "  +----------------------------------------------------------+"
+        echo "  plugin start <name> is used at the top of a library file,"
+        echo "  right before declaring library variables and functions,"
+        echo "  to ensure that iany declaration doesn't happen more than once"
+        echo "  should the library be sourced multiple times; this situation may"
+        echo "  occur when the library is used by other libraries, and each"
+        echo "  of those attempts to load it. The actual registration is only"
+        echo "  performed by the plugin end <name> command, which must be added"
+        echo "  at the end of the file."
+        echo ""
+        echo "  EXAMPLE:"
+        echo "    #!/bin/bash"
+        echo "    plugin start mylib"
+        echo "    function myfunc() {"
+        echo "        # do something..."
+        echo "    }"
+        echo "    plugin end mylib"
+        echo ""
+        echo "  plugin import <name> is used by the library client, in order to"
+        echo "  import the library definition into their namespaces; an alternative"
+        echo "  form is plugin load <name>:"
+        echo ""
+        echo "  EXAMPLE:"
+        echo "    #!/bin/bash"
+        echo "    plugin import mylib"
+        echo "    myfunc ARG1 ARG2"
+        echo ""
+        echo "  plugin check <name> checks if the giben plugin has already been"
+        echo "  loaded."
+        echo ""
+        echo "  plugin import will try to locate a file named _mylib.sh"
+        echo "  under the \$SCRIPTLIB or under ~/scripts/lib and will"
+        echo "  source it into the importing script's namespace."
+        echo ""
+        echo "  plugin list returns a list of registered plugins, as an array."
+        echo ""
+        echo "  plgin reset resets the contents of the plugins rgistry, effectively"
+        echo "  allowing for hot swapping function defitions by reloading plugins."
+        echo ""
         ;;
+    *)
+	echo $usage
+	return 1
+	;;
     esac
 }
 

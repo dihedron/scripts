@@ -1,9 +1,19 @@
-#!/bin/bash
+#! /bin/bash
 
 plugin start sudo
 
 plugin import log
 
-echo "hallo from sudo"
+#
+# Check whether the user is a sudoer
+#
+sudo_enabled() {
+    log_d "checking sudo"
+    sudo true
+    return $?
+}
 
 plugin end sudo
+
+
+
