@@ -5,7 +5,7 @@ pragma start CONCOURSE
 pragma import LOG
 
 #
-# concourse_docnload downloads conourse version 2.7.0 
+# concourse_download downloads concourse version 2.7.0 
 # from the official github repository
 #
 concourse_download() {

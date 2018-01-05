@@ -1,6 +1,6 @@
 #! /bin/bash
 
-plugin start log
+pragma begin log
 
 if [ "$_level" == "" ]; then
     _level=3
@@ -42,14 +42,15 @@ log_get_level() {
 log_print() {
     if [ $# -eq 0 ]; then
         return 1
-    fi
+    fi    
 
     if [ $1 -le $_level -a $1 -gt 0 ]; then
+        local now=$(date +"%d%m%Y@%T")
         case $1 in
-            1) echo -n "[E]" ;;
-            2) echo -n "[W]" ;;
-            3) echo -n "[I]" ;;
-            4) echo -n "[D]" ;;
+            1) echo -n "$now [E]" ;;
+            2) echo -n "$now [W]" ;;
+            3) echo -n "$now [I]" ;;
+            4) echo -n "$now [D]" ;;
         esac 
         shift
         for arg in "$@"; do
@@ -87,7 +88,4 @@ log_e() {
     log_print 1 $@
 }
 
-plugin end log
-
-
-
+pragma end log

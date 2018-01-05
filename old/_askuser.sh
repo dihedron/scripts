@@ -5,7 +5,7 @@ plugin start askuser
 plugin import log
 
 #
-# ask_yes_no askis for user confirmation; accepts an optiional message, and 
+# ask_yes_no asks for user confirmation; accepts an optional message, and 
 # returns 0 (yes) or 1 (no), looping until the user provides a valid answer.
 #
 ask_yes_no() {

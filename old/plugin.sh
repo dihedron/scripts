@@ -104,7 +104,7 @@ plugin() {
         echo "  +----------------------------------------------------------+"
         echo "  plugin start <name> is used at the top of a library file,"
         echo "  right before declaring library variables and functions,"
-        echo "  to ensure that iany declaration doesn't happen more than once"
+        echo "  to ensure that any declaration doesn't happen more than once"
         echo "  should the library be sourced multiple times; this situation may"
         echo "  occur when the library is used by other libraries, and each"
         echo "  of those attempts to load it. The actual registration is only"
