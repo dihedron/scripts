@@ -39,8 +39,8 @@ _pragma_confirm() {
     done
 }
 
-# _pragma_pluginsdir echoes the directory where plugins are located to STDOUT
-_pragma_pluginsdir() {
+# _pragma_directory echoes the directory where plugins are located to STDOUT
+_pragma_directory() {
     if [ "$PLUGINSLIB" != "" -a -d "$PLUGINSLIB" ]; then
         echo $PLUGINSLIB
         return $EOK
@@ -64,8 +64,8 @@ _pragma_begin() {
         return $EINVAL
     fi     
 
-    local directory=$(_pragma_pluginsdir)   
-    if [ $? -a -d "${directory}" ]; then
+    local directory=$(_pragma_directory)   
+    if [ $? -eq 0 -a -d "${directory}" ]; then
         return $EOK
     fi
     # plugins directory not found!
@@ -98,8 +98,8 @@ _pragma_exists() {
         return $EINVAL
     fi
 
-    local directory=$(_pragma_pluginsdir)
-    if [ $? ]; then
+    local directory=$(_pragma_directory)
+    if [ $? -eq 0 ]; then
         if [ -f "${directory}/_${name}.sh" ]; then
             return $EOK
         fi
@@ -141,8 +141,8 @@ _pragma_import() {
     fi
 
     # load it from the current plugin directory
-    local directory=$(_pragma_pluginsdir)
-    if [ $? ]; then
+    local directory=$(_pragma_directory)
+    if [ $? -eq 0 ]; then
         if [ -f "${directory}/_${name}.sh" ]; then
             source "${directory}/_${name}.sh"
             return $?
@@ -162,13 +162,13 @@ _pragma_stub() {
     fi
 
     # get the target directory
-    local directory=$(_pragma_pluginsdir)
+    local directory=$(_pragma_directory)
     if [ -z "$directory" ]; then
         return $ENOENT
     fi
 
     _pragma_exists $name
-    if [ $? ]; then
+    if [ $? -eq 0 ]; then
         _pragma_confirm "The file _${name}.sh already exists under ${directory} and will be overwritten; are you sure?"
         if [ $? -eq $ENOPE ]; then
             return $ENOPE
@@ -183,7 +183,7 @@ pragma begin ${name}
 pragma import log
 
 #
-# ${name}_test is an example function 
+# ${name}_test() is an example function.
 #
 ${name}_test() {
     log_i "hallo from ${name}!"
@@ -255,8 +255,8 @@ _pragma_help() {
         echo "  pragma list prints a list of registered plugins to STDOUT."
         echo ""
         ;;
-    "pluginsdir")
-        echo "  pragma pluginsdir prints the current plugins directory to STDOUT."
+    "directory")
+        echo "  pragma directory prints the current plugins directory to STDOUT."
         ;;
     "reset")
         echo "  pragma reset resets the contents of the plugins registry, effectively"
@@ -270,9 +270,13 @@ _pragma_help() {
         echo "usage: "
         echo "  pragma help [<arg>]"
         echo "      prints an help message for the given sub-command"
-        echo "  pragma pluginsdir"
+        echo "  pragma directory"
         echo "      prints the current plugins directory"
-        echo "  pragma <begin|end|import|loaded|exists|reset|list|stub> [<name>]"
+        echo "  pragma reset"
+        echo "      resets the plugin registry, allowing to reload plugins"
+        echo "  pragma list"
+        echo "      rpints the list of all loaded plugins"
+        echo "  pragma <begin|end|import|loaded|exists|stub> [<name>]"
         echo "      perfoms the given sub-command on plugin <name>"
         ;;    
     esac
@@ -309,7 +313,7 @@ pragma() {
         _pragma_exists $2
         case $? in  
         $WOK    ) return $EOK ;;
-        $ENOENT ) echo "no such plugin: \"$2\" (as $(_pragma_pluginsdir)/_${2}.sh)"; return $ENOENT ;;
+        $ENOENT ) echo "no such plugin: \"$2\" (as $(_pragma_directory)/_${2}.sh)"; return $ENOENT ;;
         $EINVAL ) _pragma_help; return $EINVAL ;;
         *       ) return $? ;;
         esac
@@ -320,7 +324,7 @@ pragma() {
         case $ERR in
         $EOK    ) return $OK;;
         $ENOPE  ) echo "generic error importing plugin"; return $ENOPE ;;
-        $ENOENT ) echo "no such plugin: \"$2\" (as $(_pragma_pluginsdir)/_${2}.sh)"; return $ENOENT ;;
+        $ENOENT ) echo "no such plugin: \"$2\" (as $(_pragma_directory)/_${2}.sh)"; return $ENOENT ;;
         $EINVAL ) _pragma_help; return $EINVAL ;;
         *       ) echo "error sourcing plugin: $ERR"; return $ERR ;;
         esac
@@ -344,8 +348,8 @@ pragma() {
         done
         return $EOK            
         ;;
-    "pluginsdir")
-        _pragma_pluginsdir
+    "directory")
+        _pragma_directory
         return $?
         ;;
     "stub")
