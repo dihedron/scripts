@@ -233,10 +233,11 @@ _pragma_help() {
         echo "  pragma import <name> is used by the plugin client, in order to"
         echo "  import the plugin variables, contants and function definitions into"
         echo "  its namespace; plugins are bash scripts located under \$PLUGINSLIB "
-        echo "  (if defined) or under the user's home directory (\$HOME/.plugins),"
-        echo "  with names sucha as \"_log.sh\" for the \"log\" plugin; it is safe "
-        echo "  to import the same plugin multiple times thanks to the plugin registr-"
-        echo "  ation mechanism."
+        echo "  (if defined) or under the user's home directory (\$HOME/.plugins)"
+        echo "  or a subdirectory of the current directory (./.plugins); each plugin"
+        echo "  has a name such as \"_log.sh\" for the \"log\" plugin; it is safe to"
+        echo "  import the same plugin multiple times thanks to the plugin registration"
+        echo "  mechanism."
         echo ""
         echo "  EXAMPLE:"
         echo "    #!/bin/bash"
@@ -246,17 +247,20 @@ _pragma_help() {
         ;;
     "loaded")
         echo "  pragma loaded <name> checks if the given plugin has already been loaded."
+        echo ""
         ;;
     "exists")
         echo "  pragma exists <name> checks if an implementation for the given plugin"
         echo "  exists under one of the supported paths."
+        echo ""
         ;;
     "list")
-        echo "  pragma list prints a list of registered plugins to STDOUT."
+        echo "  pragma list prints the list of registered plugins to STDOUT."
         echo ""
         ;;
     "directory")
         echo "  pragma directory prints the current plugins directory to STDOUT."
+        echo ""
         ;;
     "reset")
         echo "  pragma reset resets the contents of the plugins registry, effectively"
@@ -265,6 +269,7 @@ _pragma_help() {
         ;;
     "stub")
         echo "  pragma stub <name> creates the stub of a new plugin."
+        echo ""
         ;;
     *)
         echo "usage: "
@@ -275,9 +280,10 @@ _pragma_help() {
         echo "  pragma reset"
         echo "      resets the plugin registry, allowing to reload plugins"
         echo "  pragma list"
-        echo "      rpints the list of all loaded plugins"
+        echo "      prints the list of all loaded plugins"
         echo "  pragma <begin|end|import|loaded|exists|stub> [<name>]"
         echo "      perfoms the given sub-command on plugin <name>"
+        echo ""
         ;;    
     esac
     return $EOK
