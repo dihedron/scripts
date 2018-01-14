@@ -13,7 +13,7 @@ file_exists() {
 		return 1
 	fi
 	
-    local file=$1
+	local file=$1
 	if [ -f ${file} ]; then
 		return 0
 	fi
@@ -31,8 +31,8 @@ file_backup() {
 		return 1
 	fi
 	
-    local src="$1"
-    local dst="${src}.orig"
+	local src="$1"
+	local dst="${src}.orig"
 	file_exists "${src}"
 	if [ $? -ne 0 ]; then
 		return 1
@@ -58,8 +58,8 @@ file_backup_to() {
 		return 1
 	fi
 	
-    local src=$1
-    local dst=$2
+	local src=$1
+	local dst=$2
 	file_exists "${src}"
 	if [ $? -ne 0 ]; then
 		return 1
@@ -86,7 +86,7 @@ file_backup_force() {
 	fi
 	
 	local src=$1
-    local dst="${src}.orig"
+	local dst="${src}.orig"
 	file_exists "${src}"
 	if [ $? -ne 0 ]; then
 		return 1
@@ -94,10 +94,10 @@ file_backup_force() {
 
 	file_exists "${dst}"
 	if [ $? -eq 0 ]; then
-        # preserve owner, group, access bits
-        cat "${src}" > "${dst}"
-    else        
-        cp -p "${src}" "${dst}"
+		# preserve owner, group, access bits
+		cat "${src}" > "${dst}"
+	else		
+		cp -p "${src}" "${dst}"
 	fi
 
 	return $?
@@ -113,8 +113,8 @@ file_backup_force_to() {
 		return 1
 	fi
 	
-    local src=$1
-    local dst=$2
+	local src=$1
+	local dst=$2
 	file_exists "${src}"
 	if [ $? -ne 0 ]; then
 		return 1
@@ -123,9 +123,9 @@ file_backup_force_to() {
 	file_exists "${dst}"
 	if [ $? -eq 0 ]; then
 		# preserve owner, group, access bits
-        cat "${src}" > "${dst}"
-    else    
-        cp -p "${src}" "${dst}"
+		cat "${src}" > "${dst}"
+	else	
+		cp -p "${src}" "${dst}"
 	fi
 	
 	return $?
@@ -142,7 +142,7 @@ file_restore() {
 	fi
 	
 	local dst=$1
-    local src="${dst}.orig"
+	local src="${dst}.orig"
 	file_exists "${src}"
 	if [ $? -ne 0 ]; then
 		return 1
@@ -167,8 +167,8 @@ file_restore_from() {
 		return 1
 	fi
 	
-    local dst=$1
-    local src=$2
+	local dst=$1
+	local src=$2
 	file_exists "${src}"
 	if [ $? -ne 0 ]; then
 		return 1
@@ -194,7 +194,7 @@ file_restore_force() {
 	fi
 	
 	local dst=$1
-    local src="${dst}.orig"
+	local src="${dst}.orig"
 	file_exists "${src}"
 	if [ $? -ne 0 ]; then
 		return 1
@@ -202,10 +202,10 @@ file_restore_force() {
 
 	file_exists "${dst}"
 	if [ $? -eq 0 ]; then
-        # preserve owner, group, access bits
-        cat "${src}" > "${dst}"
-    else
-        mv "${src}" "${dst}"
+		# preserve owner, group, access bits
+		cat "${src}" > "${dst}"
+	else
+		mv "${src}" "${dst}"
 	fi	
 
 	return $?
@@ -230,11 +230,11 @@ file_restore_force_from() {
 
 	file_exists "${dst}"
 	if [ $? -eq 0 ]; then
-        # preserve owner, group, access bits
-        cat "${src}" > "${dst}"        
+		# preserve owner, group, access bits
+		cat "${src}" > "${dst}"		
 	else
-	    mv "${src}" "${dst}"
-    fi
+		mv "${src}" "${dst}"
+	fi
 	return $?
 }
 
@@ -283,11 +283,11 @@ file_install_force_as() {
 
 	file_exists "${dst}"
 	if [ $? -eq 0 ]; then
-        cat "${src}" > "${dst}"
-    else
-        cp -p "${src}" "${dst}"
-    fi
-    
+		cat "${src}" > "${dst}"
+	else
+		cp -p "${src}" "${dst}"
+	fi
+	
 	return $?
 }
 
