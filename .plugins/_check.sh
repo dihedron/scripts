@@ -12,7 +12,7 @@ check_is_bash() {
 }
 
 #
-# check_is_root checks() if the script is running under root.
+# check_is_root() checks if the script is running under root.
 #
 check_is_root() {
 	if [[ $EUID -ne 0 ]]; then
