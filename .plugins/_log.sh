@@ -3,7 +3,7 @@
 pragma begin log
 
 if [ "$_level" == "" ]; then
-    _level=3
+	_level=3
 fi
 
 #
@@ -18,19 +18,19 @@ fi
 # ("info").
 #
 log_set_level() {
-    echo "defining log set level"
-    case $1 in 
-        [0-4]) _level=$1;;
-        *    ) _level=3 ;;
-    esac
-    export _level=$_level
+	echo "defining log set level"
+	case $1 in 
+		[0-4]) _level=$1;;
+		*	) _level=3 ;;
+	esac
+	export _level=$_level
 }
 
 #
 # log_get_level returns the current logging level
 #
 log_get_level() {
-    return $_level
+	return $_level
 }
 
 #
@@ -40,52 +40,52 @@ log_get_level() {
 # be printed out separated by a blank space.
 #
 log_print() {
-    if [ $# -eq 0 ]; then
-        return 1
-    fi    
+	if [ $# -eq 0 ]; then
+		return 1
+	fi	
 
-    if [ $1 -le $_level -a $1 -gt 0 ]; then
-        local now=$(date +"%d%m%Y@%T")
-        case $1 in
-            1) echo -n "$now [E]" ;;
-            2) echo -n "$now [W]" ;;
-            3) echo -n "$now [I]" ;;
-            4) echo -n "$now [D]" ;;
-        esac 
-        shift
-        for arg in "$@"; do
-            echo -n " $arg"
-        done
-        echo ""
-    fi
+	if [ $1 -le $_level -a $1 -gt 0 ]; then
+		local now=$(date +"%d%m%Y@%T")
+		case $1 in
+			1) echo -n "$now [E]" ;;
+			2) echo -n "$now [W]" ;;
+			3) echo -n "$now [I]" ;;
+			4) echo -n "$now [D]" ;;
+		esac 
+		shift
+		for arg in "$@"; do
+			echo -n " $arg"
+		done
+		echo ""
+	fi
 }
 
 #
 # log_d prints a debug message
 #
 log_d() {
-    log_print 4 $@
+	log_print 4 $@
 }
 
 #
 # log_i prints an informational message
 #
 log_i() {
-    log_print 3 $@
+	log_print 3 $@
 }
 
 #
 # log_w prints a warning message
 #
 log_w() {
-    log_print 2 $@
+	log_print 2 $@
 }
 
 #
 # log_e prints an error message
 #
 log_e() {
-    log_print 1 $@
+	log_print 1 $@
 }
 
 pragma end log
