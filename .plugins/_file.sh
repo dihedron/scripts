@@ -2,7 +2,6 @@
 
 pragma begin file
 
-#pragma import log
 pragma import array
 
 #
@@ -11,11 +10,10 @@ pragma import array
 file_exists() {
 	array_has_exactly 1 $@
 	if [ $? -ne 0 ]; then
-#		log_d "file_exists: exactly one file must be provided"
 		return 1
 	fi
 	
-	local file=$1
+    local file=$1
 	if [ -f ${file} ]; then
 		return 0
 	fi
@@ -30,21 +28,18 @@ file_exists() {
 file_backup() {
 	array_has_exactly 1 $@
 	if [ $? -ne 0 ]; then
-#		log_e "file_backup: exactly one file must be provided"
 		return 1
 	fi
 	
-	local src="$1"
+    local src="$1"
     local dst="${src}.orig"
 	file_exists "${src}"
 	if [ $? -ne 0 ]; then
-#		log_e "file_backup: the original file ${src} does not exist"
 		return 1
 	fi
 
 	file_exists "${dst}"
 	if [ $? -eq 0 ]; then
-#		log_e "file_backup: a backup of the original file (${dst}) exist already"
 		return 2
 	fi
 
@@ -60,21 +55,18 @@ file_backup() {
 file_backup_to() {
 	array_has_exactly 2 $@
 	if [ $? -ne 0 ]; then
-#		log_e "file_backup_to: exactly two file names must be provided"
 		return 1
 	fi
 	
-	local src=$1
-	local dst=$2
+    local src=$1
+    local dst=$2
 	file_exists "${src}"
 	if [ $? -ne 0 ]; then
-#		log_e "file_backup_to: the original file ${src} does not exist"
 		return 1
 	fi
 
 	file_exists "${dst}"
 	if [ $? -eq 0 ]; then
-#		log_e "file_backup_to: a backup of the original file (${dst}) exist already"
 		return 2
 	fi
 
@@ -90,7 +82,6 @@ file_backup_to() {
 file_backup_force() {
 	array_has_exactly 1 $@
 	if [ $? -ne 0 ]; then
-#		log_e "file_backup_force: exactly one file must be provided"
 		return 1
 	fi
 	
@@ -98,16 +89,17 @@ file_backup_force() {
     local dst="${src}.orig"
 	file_exists "${src}"
 	if [ $? -ne 0 ]; then
-#		log_e "file_backup_force: the original file ${src} does not exist"
 		return 1
 	fi
 
-#	file_exists "${dst}"
-#	if [ $? -eq 0 ]; then
-#		log_w "file_backup_force: overwriting existing backup of the original file (${dst})"
-#	fi
+	file_exists "${dst}"
+	if [ $? -eq 0 ]; then
+        # preserve owner, group, access bits
+        cat "${src}" > "${dst}"
+    else        
+        cp -p "${src}" "${dst}"
+	fi
 
-	cp -p "${src}" "${dst}"
 	return $?
 }
 
@@ -118,24 +110,24 @@ file_backup_force() {
 file_backup_force_to() {
 	array_has_exactly 2 $@
 	if [ $? -ne 0 ]; then
-		log_e "file_backup_force_to: exactly two file names must be provided"
 		return 1
 	fi
 	
-	local src=$1
-	local dst=$2
+    local src=$1
+    local dst=$2
 	file_exists "${src}"
 	if [ $? -ne 0 ]; then
-#		log_e "file_backup_force_to: the original file ${src} does not exist"
 		return 1
 	fi
 
-#	file_exists "${dst}"
-#	if [ $? -eq 0 ]; then
-#		log_w "file_backup_force_to: overwriting existing backup of the original file (${dst})"
-#	fi
-
-	cp -p "${src}" "${dst}"
+	file_exists "${dst}"
+	if [ $? -eq 0 ]; then
+		# preserve owner, group, access bits
+        cat "${src}" > "${dst}"
+    else    
+        cp -p "${src}" "${dst}"
+	fi
+	
 	return $?
 }
 
@@ -146,7 +138,6 @@ file_backup_force_to() {
 file_restore() {
 	array_has_exactly 1 $@
 	if [ $? -ne 0 ]; then
-#		log_e "file_restore: exactly one file must be provided"
 		return 1
 	fi
 	
@@ -154,13 +145,11 @@ file_restore() {
     local src="${dst}.orig"
 	file_exists "${src}"
 	if [ $? -ne 0 ]; then
-#		log_e "file_restore: the backup file (${src}) does not exist"
 		return 1
 	fi
 
 	file_exists "${dst}"
 	if [ $? -eq 0 ]; then
-#		log_e "file_restore: the original file (${dst}) exist already"
 		return 2
 	fi
 
@@ -175,21 +164,18 @@ file_restore() {
 file_restore_from() {
 	array_has_exactly 2 $@
 	if [ $? -ne 0 ]; then
-		log_e "file_restore_from: exactly two file names must be provided"
 		return 1
 	fi
 	
-	local dst=$1
-	local src=$2
+    local dst=$1
+    local src=$2
 	file_exists "${src}"
 	if [ $? -ne 0 ]; then
-#		log_e "file_restore_from: the backup file (${src}) does not exist"
 		return 1
 	fi
 
 	file_exists "${dst}"
 	if [ $? -eq 0 ]; then
-#		log_e "file_restore_from: the original file (${dst}) exist already"
 		return 2
 	fi
 
@@ -204,7 +190,6 @@ file_restore_from() {
 file_restore_force() {
 	array_has_exactly 1 $@
 	if [ $? -ne 0 ]; then
-		log_e "file_restore: exactly one file must be provided"
 		return 1
 	fi
 	
@@ -212,16 +197,17 @@ file_restore_force() {
     local src="${dst}.orig"
 	file_exists "${src}"
 	if [ $? -ne 0 ]; then
-#		log_e "file_restore: the backup file (${src}) does not exist"
 		return 1
 	fi
 
-#	file_exists "${dst}"
-#	if [ $? -eq 0 ]; then
-#		log_w "file_restore_force: overwriting an existing original file (${dst})"
-#	fi
+	file_exists "${dst}"
+	if [ $? -eq 0 ]; then
+        # preserve owner, group, access bits
+        cat "${src}" > "${dst}"
+    else
+        mv "${src}" "${dst}"
+	fi	
 
-	mv "${src}" "${dst}"
 	return $?
 }
 
@@ -232,7 +218,6 @@ file_restore_force() {
 file_restore_force_from() {
 	array_has_exactly 2 $@
 	if [ $? -ne 0 ]; then
-#		log_e "file_restore_force_from: exactly two file names must be provided"
 		return 1
 	fi
 	
@@ -240,16 +225,16 @@ file_restore_force_from() {
 	local src=$2
 	file_exists "${src}"
 	if [ $? -ne 0 ]; then
-#		log_e "file_restore_force_from: the backup file (${src}) does not exist"
 		return 1
 	fi
 
-#	file_exists "${dst}"
-#	if [ $? -eq 0 ]; then
-#		log_w "file_restore_force_from: overwriting an existing original file (${dst})"
-#	fi
-
-	mv "${src}" "${dst}"
+	file_exists "${dst}"
+	if [ $? -eq 0 ]; then
+        # preserve owner, group, access bits
+        cat "${src}" > "${dst}"        
+	else
+	    mv "${src}" "${dst}"
+    fi
 	return $?
 }
 
@@ -260,7 +245,6 @@ file_restore_force_from() {
 file_install_as() {
 	array_has_exactly 2 $@
 	if [ $? -ne 0 ]; then
-		log_e "file_install_as: exactly two file names must be provided"
 		return 1
 	fi
 	
@@ -268,13 +252,11 @@ file_install_as() {
 	local dst=$2
 	file_exists "${src}"
 	if [ $? -ne 0 ]; then
-#		log_e "file_install_as: the original file ${src} does not exist"
 		return 1
 	fi
 
 	file_exists "${dst}"
 	if [ $? -eq 0 ]; then
-#		log_e "file_install_as: the destination file (${dst}) exist already"
 		return 2
 	fi
 
@@ -289,7 +271,6 @@ file_install_as() {
 file_install_force_as() {
 	array_has_exactly 2 $@
 	if [ $? -ne 0 ]; then
-#		log_e "file_install_as: exactly two file names must be provided"
 		return 1
 	fi
 	
@@ -297,16 +278,11 @@ file_install_force_as() {
 	local dst=$2
 	file_exists "${src}"
 	if [ $? -ne 0 ]; then
-#		log_e "file_install_as: the original file ${src} does not exist"
 		return 1
 	fi
 
-#	file_exists "${dst}"
-#	if [ $? -eq 0 ]; then
-#		log_w "file_install_force_as: overwriting an existing the destination file (${dst})"
-#	fi
-
-    if [ -f ${dst} ]; then
+	file_exists "${dst}"
+	if [ $? -eq 0 ]; then
         cat "${src}" > "${dst}"
     else
         cp -p "${src}" "${dst}"
