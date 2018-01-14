@@ -8,8 +8,8 @@ Thanks to the plugin registration mechanism provided by the ```pragma``` instruc
 
 ## How to create your own plugins
 
-Each plugin is a shell script with some ```pragma``` instructions added at the top and at the bottom. They are located in a common directory:
-- if ```$PLUGINSLIB``` is specified, they are fetched from there, otherwise 
+Each plugin is a shell script with some ```pragma``` instructions added at the top and at the bottom. They are located in one of a set of directories, either specified via an environment variable (```$PLUGINSPATH```) or under well known localtions:
+- if ```$PLUGINSPATH``` is specified (as a list of colon-separated directories), they are fetched from there, otherwise 
 - if a directory named ```.plugins``` exists under the user's home directory, they are taken from there, otherwise
 - if a ```.plugins``` directory exists under the current directory, the ```pragma``` loader will look there.
 
@@ -20,7 +20,7 @@ The ```pragma``` loader can be instructed to reset its registry of currently loa
 ## How to set up the environment
 
 In order to start working:
-1. export ```PLUGINSLIB```, or copy/create ```.plugins``` under your home directory or under the current directory;
+1. export ```PLUGINSPATH```, or copy/create ```.plugins``` under your home directory or under the current directory;
 2. source ```pragma.sh``` into the current shell (```. ./pragma.sh```)
 3. to create the stub of a new plugin "foo", use ```pragma stub foo```, then proceed to editing the ```_foo.sh``` file in your plugin directory.
 4. to import plugin "foo", simply write ```pragma import foo``` at the top of your script.
